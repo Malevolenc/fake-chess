@@ -1,0 +1,24 @@
+.chessSquare{
+    height: 100px;
+    width: 100px;
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.chessSquare:has(img) {
+    cursor: pointer;
+}
+
+.blackSquare{
+    background-color: #769656;
+}
+
+.whiteSquare{
+    background-color: #eeeed2;
+}
+
+.squareSelected{
+    background-color: #baca44;
+}

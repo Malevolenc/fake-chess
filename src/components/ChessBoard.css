@@ -1,0 +1,13 @@
+.Chessboard{
+    display: flex;
+    flex-direction: column;
+}
+
+.Chessboard.black{
+    flex-direction: column-reverse;
+    transform: rotateY(180deg);
+}
+
+.Chessboard.black > .row > .chessSquare >.piece{
+    transform: rotateY(180deg);
+}

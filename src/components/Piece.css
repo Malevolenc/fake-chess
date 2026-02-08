@@ -1,0 +1,10 @@
+.piece{
+    height: 90px;
+    width: 90px;
+    pointer-events: none;
+    user-select: none;  
+}
+
+.blackSidePiece{
+    transform: rotateY(180deg);
+}
