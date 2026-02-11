@@ -2,7 +2,7 @@ import Square from "./Square"
 
 import "./Row.css"
 
-export default function Row({startingColour, playerColour, currentTurnState, chessBoardArrayState, currentSquareSelectedState, currentPieceSelectedState, currentRowIndex, currentRowArray}){
+export default function Row({startingColour, currentRowIndex, currentRowArray}){
     function createRow(){
         let currentSquareColour =startingColour
         let rowArr = []
@@ -11,13 +11,6 @@ export default function Row({startingColour, playerColour, currentTurnState, che
                     <Square
                     key={`${String.fromCharCode(96+i)}${currentRowIndex}`}
                     squareColour={`${currentSquareColour}`}
-                    playerColour={playerColour}
-
-                    currentTurnState={currentTurnState}
-                    chessBoardArrayState={chessBoardArrayState}
-
-                    currentSquareSelectedState={currentSquareSelectedState}
-                    currentPieceSelectedState={currentPieceSelectedState}
 
                     currentRowIndex={currentRowIndex}
                     currentColumnIndex={i}

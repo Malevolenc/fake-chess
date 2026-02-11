@@ -1,26 +1,26 @@
 import Row from "./Row"
 
 import "./ChessBoard.css"
+import { useContext } from "react"
+import { GameInformationContext } from "../contexts/GameInformationContext"
 
-export default function Chessboard({playerColour, currentTurnState, chessBoardArrayState, currentSquareSelectedState, currentPieceSelectedState}){
+export default function Chessboard(){
+    const { 
+        playerColour,
+        chessBoardArray
+    } = useContext(GameInformationContext)
+    
     function printBoard(){
         let boardArr = []
         let currentSquareColour = "white"
-        for (let i = 0; i < chessBoardArrayState[0].length; i++){
+        for (let i = 0; i < chessBoardArray.length; i++){
             boardArr.push(
                 <Row
                 key={`${i+1} row`}
                 startingColour={currentSquareColour}
-                playerColour={playerColour}
-
-                currentTurnState={currentTurnState}
-                chessBoardArrayState={chessBoardArrayState}
-
-                currentSquareSelectedState={currentSquareSelectedState}
-                currentPieceSelectedState={currentPieceSelectedState}
 
                 currentRowIndex={i}
-                currentRowArray={chessBoardArrayState[0][i]}
+                currentRowArray={chessBoardArray[i]}
                 />
             )
             currentSquareColour = currentSquareColour == "white" ? "black" : "white"

@@ -3,50 +3,51 @@ import { Coordinate } from "./CoordinateClass";
 import { PieceMovement } from "./PieceMovement";
 import checkSquare from "./checkSquare";
 
-export default function movePiece(initialCoords, finalCoords, chessBoardArrayState, currentPieceSelected, currentTurn){
+export default function movePiece(initialCoords, finalCoords, chessBoardArray, setChessBoardArray, currentPieceSelected, currentTurn){
+
     let [iRow,iColumn] = Coordinate.coordsToIndices(initialCoords)
     let [fRow, fColumn] = Coordinate.coordsToIndices(finalCoords)
 
     switch (currentPieceSelected.toLowerCase()){
         case "q":
-            if (!PieceMovement.queenMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.queenMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
         case "r":
-            if (!PieceMovement.rookMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.rookMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
         case "b":
-            if (!PieceMovement.bishopMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.bishopMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
         case "p":
-            if (!PieceMovement.pawnMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.pawnMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
         case "n":
-            if (!PieceMovement.knightMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.knightMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
         case "k":
-            if (!PieceMovement.kingMovement(chessBoardArrayState[0],iRow,iColumn,fRow,fColumn, currentTurn)){
+            if (!PieceMovement.kingMovement(chessBoardArray,iRow,iColumn,fRow,fColumn, currentTurn)){
                 return false
             }
             break;
 
     }
 
-    chessBoardArrayState[1]((prevChessBoardArray)=>{
+    setChessBoardArray((prevChessBoardArray)=>{
         let piece = prevChessBoardArray[iRow][iColumn]
             return prevChessBoardArray.map((row, rowIndex)=>{
                 if (iRow == rowIndex || fRow == rowIndex){

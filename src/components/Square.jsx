@@ -1,5 +1,3 @@
-import React from 'react'
-
 import "./Square.css"
 
 import Piece from "./Piece"
@@ -7,15 +5,17 @@ import Piece from "./Piece"
 import checkSquare from "../functionality/checkSquare"
 import movePiece from '../functionality/movePiece'
 import { Coordinate } from '../functionality/CoordinateClass'
+import { useContext } from "react"
+import { GameInformationContext } from "../contexts/GameInformationContext"
 
-export default function Square({squareColour, playerColour,  currentTurnState, chessBoardArrayState, currentSquareSelectedState, currentPieceSelectedState, currentRowIndex, currentColumnIndex, currentColumnElement}){
+export default function Square({squareColour, playerColour, currentRowIndex, currentColumnIndex, currentColumnElement}){
     let coordinate = Coordinate.indicesToCoords(currentRowIndex,currentColumnIndex)
-
-    const [chessBoardArray, setChessBoardArray] = chessBoardArrayState
-    const [currentTurn, setCurrentTurn] = currentTurnState
-
-    const [currentSquareSelected, setCurrentSquareSelected] = currentSquareSelectedState
-    const [currentPieceSelected, setCurrentPieceSelected] = currentPieceSelectedState
+    const {
+        chessBoardArray, setChessBoardArray,
+        currentTurn, setCurrentTurn, 
+        currentSquareSelected, setCurrentSquareSelected,
+        currentPieceSelected, setCurrentPieceSelected
+    } = useContext(GameInformationContext)
 
     function handleClick(event){
         // Selecting a piece
@@ -32,13 +32,11 @@ export default function Square({squareColour, playerColour,  currentTurnState, c
                 setCurrentSquareSelected(()=>"")
                 setCurrentPieceSelected(()=>"")
             } else if (event.target.id != currentSquareSelected){
-                if (movePiece(currentSquareSelected, event.target.id, chessBoardArrayState, currentPieceSelected, currentTurnState[0])){
+                if (movePiece(currentSquareSelected, event.target.id, chessBoardArray, setChessBoardArray, currentPieceSelected, currentTurn)){
                     setCurrentSquareSelected(()=>"")
                     setCurrentPieceSelected(()=>"")
                     setCurrentTurn((prevCurrentTurn)=>prevCurrentTurn=="white"?"black":"white")
                 }
-                
-                
             }
         }
     }

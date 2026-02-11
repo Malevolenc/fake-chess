@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect, useContext} from 'react'
 import './App.css'
 
 import Chessboard from './ChessBoard'
@@ -7,70 +7,71 @@ import FENtoArray from '../functionality/FENtoArray'
 import { FENPresets } from '../functionality/FENPresets'
 import activateSquare from '../functionality/activateSquare'
 
+import { GameInformationContext } from '../contexts/GameInformationContext'
+
 export default function App() {
   let {emptyBoardFEN, startingBoardFEN, testBoardFEN} = FENPresets
 
-  const playerColourState = React.useState("black")
-
   // chessBoardArrayState[0][0] == h1 & chessBoardArrayState[7][7] = a8 from Top Left to Bottom Right White POV
-  const chessBoardArrayState = React.useState(FENtoArray(emptyBoardFEN))
-  const currentTurnState = React.useState("white")
-  const currentSquareSelectedState = React.useState("")
-  const currentPieceSelectedState = React.useState("")
 
-  const [chessBoardArray, setChessBoardArray] = chessBoardArrayState
-  const [currentTurn, setCurrentTurn] = currentTurnState
+  const [playerColour, setPlayerColour] = useState("black")
+  const [chessBoardArray, setChessBoardArray] = useState(FENtoArray(emptyBoardFEN))
+  const [currentTurn, setCurrentTurn] = useState("white")
 
-  const [currentSquareSelected, setCurrentSquareSelected] = currentSquareSelectedState
-  const [currentPieceSelected, setCurrentPieceSelected] = currentPieceSelectedState
+  const [currentSquareSelected, setCurrentSquareSelected] = useState("")
+  const [currentPieceSelected, setCurrentPieceSelected] = useState("")
 
-  React.useEffect(()=>{
+  useEffect(()=>{
     activateSquare(currentSquareSelected)
     }, [currentSquareSelected])
 
   function clearBoard(){
-    chessBoardArrayState[1](()=>FENtoArray(emptyBoardFEN))
-    currentTurnState[1](()=>"white")
-    currentSquareSelectedState[1](()=>"")
-    currentPieceSelectedState[1](()=>"")
+    setChessBoardArray(()=>FENtoArray(emptyBoardFEN))
+    setCurrentTurn(()=>"white")
+    setCurrentSquareSelected(()=>"")
+    setCurrentPieceSelected(()=>"")
   }
 
   function startGame(){
-    chessBoardArrayState[1](()=>FENtoArray(startingBoardFEN))
-    playerColourState[1](()=>{
+    setChessBoardArray(()=>FENtoArray(startingBoardFEN))
+    setPlayerColour(()=>{
       return Math.floor(Math.random()*2) == 0 ? "white" : "black"
     })
-    currentTurnState[1](()=>"white")
-    currentSquareSelectedState[1](()=>"")
-    currentPieceSelectedState[1](()=>"")
+    setCurrentTurn(()=>"white")
+    setCurrentSquareSelected(()=>"")
+    setCurrentPieceSelected(()=>"")
   }
 
   function startTest(){
-    chessBoardArrayState[1](()=>FENtoArray(testBoardFEN))
-    playerColourState[1](()=>{
+    setChessBoardArray(()=>FENtoArray(testBoardFEN))
+    setPlayerColour(()=>{
       return Math.floor(Math.random()*2) == 0 ? "white" : "black"
     })
-    currentTurnState[1](()=>"white")
-    currentSquareSelectedState[1](()=>"")
-    currentPieceSelectedState[1](()=>"")
+    setCurrentTurn(()=>"white")
+    setCurrentSquareSelected(()=>"")
+    setCurrentPieceSelected(()=>"")
   }
 
   return (
     <>
+    <GameInformationContext.Provider value={{
+      playerColour, setPlayerColour,
+      chessBoardArray, setChessBoardArray,
+      currentTurn, setCurrentTurn,
+      currentSquareSelected, setCurrentSquareSelected,
+      currentPieceSelected, setCurrentPieceSelected
+
+    }}>
       <Chessboard
       key={"Chessboard"}
-      playerColour={playerColourState[0]}
-
-      currentTurnState={currentTurnState}
-      chessBoardArrayState={chessBoardArrayState}
-
-      currentSquareSelectedState={currentSquareSelectedState}
-      currentPieceSelectedState={currentPieceSelectedState}
       />
+    </GameInformationContext.Provider>
 
+    
       <button onClick={clearBoard}>Clear Board</button>
       <button onClick={startGame}>Start Game</button>
       <button onClick={startTest}>Start Test</button>
+
     </>
       
   )
