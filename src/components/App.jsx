@@ -5,25 +5,21 @@ import Chessboard from './ChessBoard'
 
 import FENtoArray from '../functionality/FENtoArray'
 import { FENPresets } from '../functionality/FENPresets'
-import activateSquare from '../functionality/activateSquare'
 
 import { GameInformationContext } from '../contexts/GameInformationContext'
 
 export default function App() {
   let {emptyBoardFEN, startingBoardFEN, testBoardFEN} = FENPresets
 
-  // chessBoardArrayState[0][0] == h1 & chessBoardArrayState[7][7] = a8 from Top Left to Bottom Right White POV
+  // chessBoardArrayState[0][0] === h1 & chessBoardArrayState[7][7] = a8 from Top Left to Bottom Right White POV
 
-  const [playerColour, setPlayerColour] = useState("black")
+  const [playerColour, setPlayerColour] = useState("white")
   const [chessBoardArray, setChessBoardArray] = useState(FENtoArray(emptyBoardFEN))
   const [currentTurn, setCurrentTurn] = useState("white")
 
-  const [currentSquareSelected, setCurrentSquareSelected] = useState("")
+  const [currentSquareSelected, setCurrentSquareSelected] = useState(null)
   const [currentPieceSelected, setCurrentPieceSelected] = useState("")
-
-  useEffect(()=>{
-    activateSquare(currentSquareSelected)
-    }, [currentSquareSelected])
+  const [currentPieceMoves, setCurrentPieceMoves] = useState([])
 
   function clearBoard(){
     setChessBoardArray(()=>FENtoArray(emptyBoardFEN))
@@ -35,7 +31,7 @@ export default function App() {
   function startGame(){
     setChessBoardArray(()=>FENtoArray(startingBoardFEN))
     setPlayerColour(()=>{
-      return Math.floor(Math.random()*2) == 0 ? "white" : "black"
+      return Math.floor(Math.random()*2) === 0 ? "white" : "black"
     })
     setCurrentTurn(()=>"white")
     setCurrentSquareSelected(()=>"")
@@ -45,7 +41,7 @@ export default function App() {
   function startTest(){
     setChessBoardArray(()=>FENtoArray(testBoardFEN))
     setPlayerColour(()=>{
-      return Math.floor(Math.random()*2) == 0 ? "white" : "black"
+      return Math.floor(Math.random()*2) === 0 ? "white" : "black"
     })
     setCurrentTurn(()=>"white")
     setCurrentSquareSelected(()=>"")
@@ -59,7 +55,8 @@ export default function App() {
       chessBoardArray, setChessBoardArray,
       currentTurn, setCurrentTurn,
       currentSquareSelected, setCurrentSquareSelected,
-      currentPieceSelected, setCurrentPieceSelected
+      currentPieceSelected, setCurrentPieceSelected,
+      currentPieceMoves, setCurrentPieceMoves
 
     }}>
       <Chessboard

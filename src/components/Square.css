@@ -22,3 +22,7 @@
 .squareSelected{
     background-color: #baca44;
 }
+
+.availableMoveSquare{
+   box-shadow: inset 0 0 0 8px cyan;
+}

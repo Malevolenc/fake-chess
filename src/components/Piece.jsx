@@ -39,42 +39,42 @@ export default function Piece({pieceType}){
         if (checkPiece(pieceType)){
             switch(pieceType.toLowerCase()){
                 case "b":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackBishop
                     } else{
                         return whiteBishop
                     }
 
                 case "k":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackKing
                     } else{
                         return whiteKing
                     }
 
                 case "n":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackKnight
                     } else{
                         return whiteKnight
                     }
 
                 case "p":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackPawn
                     } else{
                         return whitePawn
                     }
 
                 case "q":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackQueen
                     } else{
                         return whiteQueen
                     }
 
                 case "r":
-                    if (blackOrWhite(pieceType) == "black"){
+                    if (blackOrWhite(pieceType) === "black"){
                         return blackRook
                     } else{
                         return whiteRook
@@ -84,7 +84,7 @@ export default function Piece({pieceType}){
     };
 
     function blackOrWhite(pieceType){
-        if (pieceType.toLowerCase() == pieceType){
+        if (pieceType.toLowerCase() === pieceType){
             return "black"
         }
         else{

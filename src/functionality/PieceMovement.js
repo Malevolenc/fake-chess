@@ -1,114 +1,76 @@
+import checkSquare from "./checkSquare";
 import { Coordinate } from "./CoordinateClass";
 import { PieceDetection } from "./PieceDetectionClass";
 
 export class PieceMovement{
-    static queenMovement(chessBoardArray, iRow,iColumn, fRow, fColumn, currentTurn){
+    static queenMovement(chessBoardArray, iRow,iColumn, currentTurn){
         let possibleMoves = [
             ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn),
             ...PieceDetection.checkVertical(chessBoardArray,iRow,iColumn, currentTurn),
             ...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn)
         ]
 
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
-
-        return true
+        return possibleMoves
     }
 
-    static rookMovement(chessBoardArray, iRow,iColumn,fRow,fColumn, currentTurn){
+    static rookMovement(chessBoardArray, iRow,iColumn, currentTurn){
         let possibleMoves = [
-            ...PieceDetection.checkVertical(chessBoardArray,iRow,iColumn, currentTurn),
+            ...PieceDetection.checkVertical(chessBoardArray, currentTurn),
             ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn),
         ]
-        
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
 
-        return true
+        return possibleMoves
     }
 
-    static bishopMovement(chessBoardArray, iRow,iColumn,fRow,fColumn, currentTurn){
+    static bishopMovement(chessBoardArray, iRow,iColumn, currentTurn){
         let possibleMoves = [...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn)]
-        
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
 
-        return true
+        return possibleMoves
     }
 
-    static pawnMovement(chessBoardArray, iRow, iColumn,fRow,fColumn, currentTurn){
-        let dir = currentTurn == "white" ? -1 : 1
-
+    static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn){
+        let dir = currentTurn === "white" ? -1 : 1
         let possibleMoves = []
 
-        if (currentTurn == "white"){
-            if (iRow == 6){
-                if (!chessBoardArray[iRow+(dir*2)][iColumn]){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+(dir*2),iColumn))
-                }
-            }
-            if (iColumn == 0 && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn-dir]) != currentTurn){
-                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn-dir))
-            }
+        let newRow = iRow + dir;
 
-            else if (iColumn == 7 && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn+dir]) != currentTurn){
-                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn+dir))
-            }
+        // Making sure that the newRow is in the bounds of the board
+        if (newRow >= 0 && newRow <= 7){
+             // One Move Forward
+            if (!chessBoardArray[newRow][iColumn]){
+                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn))
 
-            else{
-                if (chessBoardArray[iRow+dir][iColumn-dir] && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn-dir]) != currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn-dir))
-                }
 
-                if (chessBoardArray[iRow+dir][iColumn+dir] && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn+dir]) != currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn+dir))
-                }
-            }
-        } 
+                // Two Moves Forward
+                const startingRow = currentTurn === "white" ? 6 : 1
 
-        if (currentTurn == "black"){
-            if (iRow == 1){
-                if (!chessBoardArray[iRow+(dir*2)][iColumn]){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+(dir*2),iColumn))
+                if (iRow === startingRow){
+                    let twoForwardRows = iRow + (dir*2)
+                    if (!chessBoardArray[twoForwardRows][iColumn]){
+                        possibleMoves.push(Coordinate.indicesToCoords(twoForwardRows,iColumn))
+                    }
                 }
             }
 
-            if (iColumn == 0 && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn+dir]) != currentTurn){
-                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn+dir))
+            // Left Diagonal Captures for pieces not in A-File
+            if (iColumn > 0){
+                if (chessBoardArray[newRow][iColumn-1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn-1]) !== currentTurn){
+                    possibleMoves.push(Coordinate.indicesToCoords(newRow,iColumn-1))
+                }
             }
 
-            else if (iColumn == 7 && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn-dir]) != currentTurn){
-                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn-dir))
-            }
-
-            else{
-                if (chessBoardArray[iRow+dir][iColumn-dir] && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn-dir]) != currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn-dir))
+            // Right Diagonal Captures for pieces not in H-File
+            if (iColumn < 7){
+                if (chessBoardArray[newRow][iColumn+1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn+1]) !== currentTurn){
+                    possibleMoves.push(Coordinate.indicesToCoords(newRow,iColumn+1))
                 }
-
-                if (chessBoardArray[iRow+dir][iColumn+dir] && PieceDetection.checkPieceColour(chessBoardArray[iRow+dir][iColumn+dir]) != currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn+dir))
-                }
-
             }
         }
-
-        if (!chessBoardArray[iRow+dir][iColumn]){
-            possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn))
-        }
-
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
-
-        // console.log(possibleMoves)
-        return true
+        
+        return possibleMoves
     }
 
-    static knightMovement(chessBoardArray, iRow, iColumn,fRow,fColumn, currentTurn){
+    static knightMovement(chessBoardArray, iRow, iColumn, currentTurn){
         let possibleMoves = []
         let directions = [
                 [-2, -1],       [-2, 1],
@@ -123,7 +85,7 @@ export class PieceMovement{
 
             if (row >= 0 && row < 8 && column >= 0 && column < 8){
                 if (chessBoardArray[row][column]){
-                    if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) == currentTurn){
+                    if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) === currentTurn){
                         continue
                     }
                 }
@@ -132,16 +94,10 @@ export class PieceMovement{
             }
         }
 
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
-
-        // console.log(possibleMoves)
-
-        return true
+        return possibleMoves
     }
 
-    static kingMovement(chessBoardArray, iRow, iColumn,fRow,fColumn, currentTurn){
+    static kingMovement(chessBoardArray, iRow, iColumn, currentTurn){
         let possibleMoves = []
         let directions = [
             [-1,-1],[-1,0],[-1,1],
@@ -155,7 +111,7 @@ export class PieceMovement{
 
             if (row >= 0 && row < 8 && column >= 0 && column < 8){
                 if (chessBoardArray[row][column]){
-                    if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) == currentTurn){
+                    if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) === currentTurn){
                         continue
                     }
                 }
@@ -164,12 +120,6 @@ export class PieceMovement{
             }
         }
 
-        if (!possibleMoves.includes(Coordinate.indicesToCoords(fRow,fColumn))){
-            return false
-        }
-
-        console.log(possibleMoves)
-
-        return true
+        return possibleMoves
     }
 }

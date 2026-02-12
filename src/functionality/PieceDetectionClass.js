@@ -2,7 +2,7 @@ import { Coordinate } from "./CoordinateClass";
 
 export class PieceDetection{
     // Checks all squares horizontal to a position
-    static checkHorizontal(chessBoardArray, iRow,iColumn, currentTurn){
+    static checkHorizontal(chessBoardArray, iRow, iColumn, currentTurn){
         let coords = []
 
         // Checks all squares left of the original square
@@ -106,7 +106,13 @@ export class PieceDetection{
     }
 
     static checkPieceColour(piece){
-        return piece.toLowerCase() == piece ? "black" : "white"
+        if (piece.toLowerCase() === piece){
+            return "black"
+        } else if(piece.toLowerCase() !== piece){
+            return "white"
+        } else{
+            return null
+        }
     }
 
 }

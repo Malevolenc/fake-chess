@@ -23,7 +23,7 @@ export default function Chessboard(){
                 currentRowArray={chessBoardArray[i]}
                 />
             )
-            currentSquareColour = currentSquareColour == "white" ? "black" : "white"
+            currentSquareColour = currentSquareColour === "white" ? "black" : "white"
         }
         return boardArr // The 0th element represents the 8th Rank, whereas the 7th array corresponds to the 1st Rank
     }

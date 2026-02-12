@@ -16,7 +16,7 @@ export default function Row({startingColour, currentRowIndex, currentRowArray}){
                     currentColumnIndex={i}
                     currentColumnElement={currentRowArray[i]}/>
                 )
-                currentSquareColour = currentSquareColour == "white" ? "black" : "white"
+                currentSquareColour = currentSquareColour === "white" ? "black" : "white"
             }
             return rowArr
         }

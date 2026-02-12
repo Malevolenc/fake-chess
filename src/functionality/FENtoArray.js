@@ -3,7 +3,7 @@ export default function FENtoArray(FENString){
       let rowFEN = []
       for (const character of FENString){
 
-        if (character == "/"){
+        if (character === "/"){
             partitionedFEN.push(rowFEN)
             rowFEN = []
             continue
