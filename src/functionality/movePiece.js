@@ -1,8 +1,16 @@
 import { Coordinate } from "./CoordinateClass";
+import updateMoveLogs from "./updateMoveLogs";
 
-export default function movePiece(initialCoords, finalCoords, setChessBoardArray){
+export default function movePiece(initialCoords, finalCoords, chessBoardArray, setChessBoardArray, setMoveLogs){
     let [iRow,iColumn] = Coordinate.coordsToIndices(initialCoords)
     let [fRow, fColumn] = Coordinate.coordsToIndices(finalCoords)
+    
+    let currentPiece = chessBoardArray[iRow][iColumn]
+    let capturedPiece;
+
+    if (chessBoardArray[fRow][fColumn]){
+        capturedPiece = chessBoardArray[fRow][fColumn]
+    }
 
     setChessBoardArray((prevChessBoardArray)=>{
         let piece = prevChessBoardArray[iRow][iColumn]
@@ -21,4 +29,6 @@ export default function movePiece(initialCoords, finalCoords, setChessBoardArray
                 return row
             })
         })
+
+    updateMoveLogs(initialCoords, finalCoords, currentPiece, capturedPiece, setMoveLogs)
     }

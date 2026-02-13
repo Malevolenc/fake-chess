@@ -1,0 +1,13 @@
+.moveLogsElement{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 30px;
+    max-height: 30vh;
+    overflow: scroll;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+.moveLog{
+    text-align: center;
+    margin: none;
+}
