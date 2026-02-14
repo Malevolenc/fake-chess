@@ -15,7 +15,7 @@ export class PieceMovement{
 
     static rookMovement(chessBoardArray, iRow,iColumn, currentTurn){
         let possibleMoves = [
-            ...PieceDetection.checkVertical(chessBoardArray, currentTurn),
+            ...PieceDetection.checkVertical(chessBoardArray, iRow, iColumn, currentTurn),
             ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn),
         ]
 

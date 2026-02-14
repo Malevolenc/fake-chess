@@ -110,8 +110,6 @@ export class PieceDetection{
             return "black"
         } else if(piece.toLowerCase() !== piece){
             return "white"
-        } else{
-            return null
         }
     }
 

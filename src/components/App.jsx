@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext} from 'react'
+import { useState, useEffect} from 'react'
 import './App.css'
 
 import Chessboard from './ChessBoard'
@@ -8,6 +8,11 @@ import { FENPresets } from '../functionality/FENPresets'
 
 import { GameInformationContext } from '../contexts/GameInformationContext'
 import MoveLog from './MoveLog'
+
+import findKing from '../functionality/findKing'
+import locatePieces from '../functionality/locatePieces'
+import genAllLegalMoves from '../functionality/genAllLegalMoves'
+import ResultDisplay from './ResultDisplay'
 
 export default function App() {
   let {emptyBoardFEN, startingBoardFEN, testBoardFEN} = FENPresets
@@ -22,12 +27,43 @@ export default function App() {
   const [currentPieceSelected, setCurrentPieceSelected] = useState("")
   const [currentPieceMoves, setCurrentPieceMoves] = useState([])
 
+  const [whiteKingCoords, setWhiteKingCoords] = useState("")
+  const [blackKingCoords, setBlackKingCoords] = useState("")
+
+  const [result, setResult] = useState("")
+
   // moveLogs[move number][white or black]
   const [moveLogs, setMoveLogs] = useState([[]])
 
-  // useEffect(()=>{
-  //   console.log(moveLogs)
-  // }, [moveLogs])
+  useEffect(()=>{
+      setWhiteKingCoords(()=>findKing("white", chessBoardArray))
+      setBlackKingCoords(()=>findKing("black", chessBoardArray))
+  }, [chessBoardArray])
+
+  useEffect(()=>{
+    let allPieceCoords = locatePieces(currentTurn, chessBoardArray)
+    let allLegalMoves;
+
+    if (allPieceCoords.length !== 0 ){
+      if (currentTurn == "white"){
+        allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords)
+
+        if (allLegalMoves.length == 0){
+          setResult(()=>"White has been Checkmated")
+        }
+
+
+    } else if (currentTurn == "black"){
+        allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, blackKingCoords)
+
+        if (allLegalMoves.length == 0){
+          setResult(()=>"Black has been Checkmated")
+        }
+    }
+    }
+
+    
+  }, [chessBoardArray])
 
   function clearBoard(){
     setChessBoardArray(()=>FENtoArray(emptyBoardFEN))
@@ -35,10 +71,14 @@ export default function App() {
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
     setMoveLogs(()=>[[]])
+    setResult(()=>"")
   }
 
   function startGame(){
-    setChessBoardArray(()=>FENtoArray(startingBoardFEN))
+    const newBoard = FENtoArray(startingBoardFEN)
+    setWhiteKingCoords(()=>findKing("white", newBoard))
+    setBlackKingCoords(()=>findKing("black", newBoard))
+    setChessBoardArray(()=>newBoard)
     setPlayerColour(()=>{
       return Math.floor(Math.random()*2) === 0 ? "white" : "black"
     })
@@ -46,10 +86,14 @@ export default function App() {
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
     setMoveLogs(()=>[[]])
+    setResult(()=>"")
   }
 
   function startTest(){
-    setChessBoardArray(()=>FENtoArray(testBoardFEN))
+    const newBoard = FENtoArray(testBoardFEN)
+    setWhiteKingCoords(()=>findKing("white", newBoard))
+    setBlackKingCoords(()=>findKing("black", newBoard))
+    setChessBoardArray(()=>newBoard)
     setPlayerColour(()=>{
       return Math.floor(Math.random()*2) === 0 ? "white" : "black"
     })
@@ -57,10 +101,12 @@ export default function App() {
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
     setMoveLogs(()=>[[]])
+    setResult(()=>"")
   }
 
   return (
     <>
+    {result && <ResultDisplay resultText={result}/>}
     <GameInformationContext.Provider value={{
       playerColour, setPlayerColour,
       chessBoardArray, setChessBoardArray,
@@ -68,7 +114,9 @@ export default function App() {
       currentSquareSelected, setCurrentSquareSelected,
       currentPieceSelected, setCurrentPieceSelected,
       currentPieceMoves, setCurrentPieceMoves,
-      moveLogs, setMoveLogs
+      moveLogs, setMoveLogs,
+      whiteKingCoords,setWhiteKingCoords,
+      blackKingCoords,setBlackKingCoords
 
     }}>
 
@@ -85,7 +133,6 @@ export default function App() {
           <button onClick={startGame}>Start Game</button>
           <button onClick={startTest}>Start Test</button>
         </article>
-        
         
       </section>
     </GameInformationContext.Provider>

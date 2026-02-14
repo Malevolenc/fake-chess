@@ -27,7 +27,6 @@ export default function updateMoveLogs(initialCoords, finalCoords, currentPiece,
                 moveNotation = `${currentPiece.toUpperCase()}x${finalCoords}`
             }
         }
-        
     }
 
     setMoveLogs((prevMoveLogs)=>{

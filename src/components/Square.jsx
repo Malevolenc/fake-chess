@@ -6,8 +6,9 @@ import checkSquare from "../functionality/checkSquare"
 import { Coordinate } from '../functionality/CoordinateClass'
 import { useContext } from "react"
 import { GameInformationContext } from "../contexts/GameInformationContext"
-import allPieceMoves from "../functionality/allPieceMoves"
 import movePiece from "../functionality/movePiece"
+import genPseudoLegalPieceMoves from "../functionality/genPseudoLegalPieceMoves"
+import filterLegalMoves from "../functionality/filterLegalMoves"
 
 export default function Square({squareColour, currentRowIndex, currentColumnIndex, currentColumnElement}){
     let coordinate = Coordinate.indicesToCoords(currentRowIndex,currentColumnIndex)
@@ -17,7 +18,9 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
         currentSquareSelected, setCurrentSquareSelected,
         currentPieceSelected, setCurrentPieceSelected,
         currentPieceMoves, setCurrentPieceMoves,
-        moveLogs, setMoveLogs
+        moveLogs, setMoveLogs,
+        whiteKingCoords, setWhiteKingCoords,
+        blackKingCoords, setBlackKingCoords
     } = useContext(GameInformationContext)
 
     function handleClick(event){
@@ -27,8 +30,20 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
             if (checkSquare(event.target.id, chessBoardArray) && event.target.childNodes[0].classList[1] === currentTurn){
                 setCurrentSquareSelected(()=>event.target.id)
                 let [pieceRow, pieceColumn] = Coordinate.coordsToIndices(event.target.id)
-                let possibleMoves = allPieceMoves(chessBoardArray[pieceRow][pieceColumn], chessBoardArray, ...Coordinate.coordsToIndices(event.target.id), currentTurn)
-                setCurrentPieceMoves(()=>possibleMoves)
+
+                let pseudoLegalPieceMoves = genPseudoLegalPieceMoves(chessBoardArray[pieceRow][pieceColumn], chessBoardArray, ...Coordinate.coordsToIndices(event.target.id), currentTurn)
+                let legalPieceMoves;
+
+
+
+                if (currentTurn == "white"){
+                    legalPieceMoves = filterLegalMoves(event.target.id, pseudoLegalPieceMoves, chessBoardArray, whiteKingCoords)
+
+                } else if (currentTurn == "black"){
+                    legalPieceMoves = filterLegalMoves(event.target.id, pseudoLegalPieceMoves, chessBoardArray, blackKingCoords)
+                }
+                
+                setCurrentPieceMoves(()=>legalPieceMoves)
                 setCurrentPieceSelected(()=>chessBoardArray[pieceRow][pieceColumn])
             } 
         // Moving a piece
@@ -42,6 +57,7 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
                 // If the target square is a legal move the piece can make
                 if (currentPieceMoves.includes(event.target.id)){
                     movePiece(currentSquareSelected, event.target.id, chessBoardArray, setChessBoardArray, setMoveLogs)
+
                     setCurrentSquareSelected(()=>"")
                     setCurrentPieceSelected(()=>"")
                     setCurrentPieceMoves(()=>[])
