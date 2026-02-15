@@ -17,10 +17,12 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
         currentTurn, setCurrentTurn, 
         currentSquareSelected, setCurrentSquareSelected,
         currentPieceSelected, setCurrentPieceSelected,
-        currentPieceMoves, setCurrentPieceMoves,
+        currentLegalPieceMoves, setCurrentLegalPieceMoves,
+        highlightedPieceMoves, setHighlightedPieceMoves,
         moveLogs, setMoveLogs,
         whiteKingCoords, setWhiteKingCoords,
-        blackKingCoords, setBlackKingCoords
+        blackKingCoords, setBlackKingCoords,
+        moveNumber, setMoveNumber
     } = useContext(GameInformationContext)
 
     function handleClick(event){
@@ -31,19 +33,19 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
                 setCurrentSquareSelected(()=>event.target.id)
                 let [pieceRow, pieceColumn] = Coordinate.coordsToIndices(event.target.id)
 
-                let pseudoLegalPieceMoves = genPseudoLegalPieceMoves(chessBoardArray[pieceRow][pieceColumn], chessBoardArray, ...Coordinate.coordsToIndices(event.target.id), currentTurn)
+                let pseudoLegalPieceMoves = genPseudoLegalPieceMoves(chessBoardArray[pieceRow][pieceColumn], chessBoardArray, ...Coordinate.coordsToIndices(event.target.id), currentTurn, moveNumber)
                 let legalPieceMoves;
 
-
+                console.log(pseudoLegalPieceMoves)
 
                 if (currentTurn == "white"){
-                    legalPieceMoves = filterLegalMoves(event.target.id, pseudoLegalPieceMoves, chessBoardArray, whiteKingCoords)
+                legalPieceMoves = filterLegalMoves(pseudoLegalPieceMoves, chessBoardArray, whiteKingCoords)
 
                 } else if (currentTurn == "black"){
-                    legalPieceMoves = filterLegalMoves(event.target.id, pseudoLegalPieceMoves, chessBoardArray, blackKingCoords)
+                    legalPieceMoves = filterLegalMoves(pseudoLegalPieceMoves, chessBoardArray, blackKingCoords)
                 }
-                
-                setCurrentPieceMoves(()=>legalPieceMoves)
+                setHighlightedPieceMoves(()=>legalPieceMoves.map((move)=>move.finalCoords))
+                setCurrentLegalPieceMoves(()=>legalPieceMoves)
                 setCurrentPieceSelected(()=>chessBoardArray[pieceRow][pieceColumn])
             } 
         // Moving a piece
@@ -52,15 +54,16 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
             if (event.target.id === currentSquareSelected){
                 setCurrentSquareSelected(()=>"")
                 setCurrentPieceSelected(()=>"")
-                setCurrentPieceMoves(()=>[])
+                setHighlightedPieceMoves(()=>[])
             } else if (event.target.id != currentSquareSelected){
                 // If the target square is a legal move the piece can make
-                if (currentPieceMoves.includes(event.target.id)){
-                    movePiece(currentSquareSelected, event.target.id, chessBoardArray, setChessBoardArray, setMoveLogs)
+                if (highlightedPieceMoves.includes(event.target.id)){
+                    movePiece(currentSquareSelected, event.target.id, chessBoardArray, setChessBoardArray, currentTurn, setMoveLogs, setMoveNumber, currentLegalPieceMoves)
 
                     setCurrentSquareSelected(()=>"")
                     setCurrentPieceSelected(()=>"")
-                    setCurrentPieceMoves(()=>[])
+                    setCurrentLegalPieceMoves(()=>[])
+                    setHighlightedPieceMoves(()=>[])
                     setCurrentTurn((prevCurrentTurn)=>prevCurrentTurn === "white"?"black":"white")
                 }
             }
@@ -74,7 +77,7 @@ export default function Square({squareColour, currentRowIndex, currentColumnInde
             chessSquare
             ${squareColour}Square 
             ${coordinate === currentSquareSelected ? 'squareSelected' : ''}
-            ${currentPieceMoves.includes(coordinate)? 'availableMoveSquare' : ''}`}>
+            ${highlightedPieceMoves.includes(coordinate)? 'availableMoveSquare' : ''}`}>
             <Piece
             pieceType={`${currentColumnElement}`}/>
         </div>

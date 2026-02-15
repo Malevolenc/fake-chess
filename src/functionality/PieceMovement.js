@@ -1,36 +1,37 @@
 import checkSquare from "./checkSquare";
 import { Coordinate } from "./CoordinateClass";
 import { PieceDetection } from "./PieceDetectionClass";
+import createMoveObject from "./createMoveObject";
 
 export class PieceMovement{
-    static queenMovement(chessBoardArray, iRow,iColumn, currentTurn){
+    static queenMovement(chessBoardArray, iRow,iColumn, currentTurn, moveNumber){
         let possibleMoves = [
-            ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn),
-            ...PieceDetection.checkVertical(chessBoardArray,iRow,iColumn, currentTurn),
-            ...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn)
+            ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn, moveNumber),
+            ...PieceDetection.checkVertical(chessBoardArray,iRow,iColumn, currentTurn, moveNumber),
+            ...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn, moveNumber)
         ]
 
         return possibleMoves
     }
 
-    static rookMovement(chessBoardArray, iRow,iColumn, currentTurn){
+    static rookMovement(chessBoardArray, iRow,iColumn, currentTurn, moveNumber){
         let possibleMoves = [
-            ...PieceDetection.checkVertical(chessBoardArray, iRow, iColumn, currentTurn),
-            ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn),
+            ...PieceDetection.checkVertical(chessBoardArray, iRow, iColumn, currentTurn, moveNumber),
+            ...PieceDetection.checkHorizontal(chessBoardArray,iRow,iColumn, currentTurn, moveNumber),
         ]
 
         return possibleMoves
     }
 
-    static bishopMovement(chessBoardArray, iRow,iColumn, currentTurn){
-        let possibleMoves = [...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn)]
+    static bishopMovement(chessBoardArray, iRow,iColumn, currentTurn, moveNumber){
+        let possibleMoves = [...PieceDetection.checkDiagonal(chessBoardArray,iRow,iColumn, currentTurn, moveNumber)]
 
         return possibleMoves
     }
 
-    static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn){
+    static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber){
         let dir = currentTurn === "white" ? -1 : 1
-        let possibleMoves = []
+        let moveObjects = []
 
         let newRow = iRow + dir;
 
@@ -38,7 +39,14 @@ export class PieceMovement{
         if (newRow >= 0 && newRow <= 7){
              // One Move Forward
             if (!chessBoardArray[newRow][iColumn]){
-                possibleMoves.push(Coordinate.indicesToCoords(iRow+dir,iColumn))
+                moveObjects.push(createMoveObject(
+                    Coordinate.indicesToCoords(iRow,iColumn),
+                    Coordinate.indicesToCoords(newRow, iColumn),
+                    chessBoardArray[iRow][iColumn],
+                    chessBoardArray[newRow][iColumn],
+                    currentTurn,
+                    moveNumber
+                ))
 
 
                 // Two Moves Forward
@@ -47,7 +55,14 @@ export class PieceMovement{
                 if (iRow === startingRow){
                     let twoForwardRows = iRow + (dir*2)
                     if (!chessBoardArray[twoForwardRows][iColumn]){
-                        possibleMoves.push(Coordinate.indicesToCoords(twoForwardRows,iColumn))
+                        moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(twoForwardRows, iColumn),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[twoForwardRows][iColumn],
+                            currentTurn,
+                            moveNumber
+                        ))
                     }
                 }
             }
@@ -55,23 +70,37 @@ export class PieceMovement{
             // Left Diagonal Captures for pieces not in A-File
             if (iColumn > 0){
                 if (chessBoardArray[newRow][iColumn-1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn-1]) !== currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(newRow,iColumn-1))
+                    moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn-1),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[newRow][iColumn-1],
+                        currentTurn,
+                        moveNumber
+                    ))
                 }
             }
 
             // Right Diagonal Captures for pieces not in H-File
             if (iColumn < 7){
                 if (chessBoardArray[newRow][iColumn+1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn+1]) !== currentTurn){
-                    possibleMoves.push(Coordinate.indicesToCoords(newRow,iColumn+1))
+                    moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn+1),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[newRow][iColumn+1],
+                        currentTurn,
+                        moveNumber
+                    ))
                 }
             }
         }
         
-        return possibleMoves
+        return moveObjects
     }
 
-    static knightMovement(chessBoardArray, iRow, iColumn, currentTurn){
-        let possibleMoves = []
+    static knightMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber){
+        let moveObjects = []
         let directions = [
                 [-2, -1],       [-2, 1],
         [-1, -2],                       [-1, 2],
@@ -89,16 +118,23 @@ export class PieceMovement{
                         continue
                     }
                 }
-                possibleMoves.push(Coordinate.indicesToCoords(row,column))
+                moveObjects.push(createMoveObject(
+                    Coordinate.indicesToCoords(iRow,iColumn),
+                    Coordinate.indicesToCoords(row, column),
+                    chessBoardArray[iRow][iColumn],
+                    chessBoardArray[row][column],
+                    currentTurn,
+                    moveNumber
+                ))
                 
             }
         }
 
-        return possibleMoves
+        return moveObjects
     }
 
-    static kingMovement(chessBoardArray, iRow, iColumn, currentTurn){
-        let possibleMoves = []
+    static kingMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber){
+        let moveObjects = []
         let directions = [
             [-1,-1],[-1,0],[-1,1],
             [0,-1],        [0,1],
@@ -115,11 +151,18 @@ export class PieceMovement{
                         continue
                     }
                 }
-                possibleMoves.push(Coordinate.indicesToCoords(row,column))
+                moveObjects.push(createMoveObject(
+                    Coordinate.indicesToCoords(iRow,iColumn),
+                    Coordinate.indicesToCoords(row, column),
+                    chessBoardArray[iRow][iColumn],
+                    chessBoardArray[row][column],
+                    currentTurn,
+                    moveNumber
+                ))
                 
             }
         }
 
-        return possibleMoves
+        return moveObjects
     }
 }

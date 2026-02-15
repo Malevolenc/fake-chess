@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { GameInformationContext } from "../contexts/GameInformationContext"
 import './MoveLog.css'
+import moveObjectToNotation from "../functionality/moveObjectToNotation"
 
 export default function MoveLog() {
     const {
@@ -11,14 +12,15 @@ export default function MoveLog() {
     let blackMoves = []
 
     function displayMoveLogs(){
-        for (let i = 0; i < moveLogs.length; i++){
-            let currentRow = moveLogs[i]
-            for (let j = 0; j < currentRow.length; j++){
-                if (j%2==0){
-                    whiteMoves.push(<h4 key={`${i+1}white`} className="moveLog">{currentRow[j]}</h4>)
-                } else{
-                    blackMoves.push(<h4 key={`${i+1}black`} className="moveLog">{currentRow[j]}</h4>)
-                }
+        for (const moveLog of moveLogs){
+            if (moveLog.currentTurn == "white"){
+                whiteMoves.push(
+                    <h3 className="moveLog" key={`${moveLog.moveNumber}${moveLog.currentTurn}`}>{moveObjectToNotation(moveLog)}</h3>
+                )
+            } else if (moveLog.currentTurn == "black"){
+                blackMoves.push(
+                    <h3 className="moveLog" key={`${moveLog.moveNumber}${moveLog.currentTurn}`}>{moveObjectToNotation(moveLog)}</h3>
+                )
             }
         }
     }

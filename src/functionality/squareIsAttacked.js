@@ -2,8 +2,13 @@ import { Coordinate } from "./CoordinateClass"
 import { PieceDetection } from "./PieceDetectionClass"
 
 export default function squareIsAttacked(currentSquare, chessBoardArray){
+
+    // Exits the function early if no kings are on the board
+    if (!currentSquare || typeof currentSquare !== 'string' || currentSquare.length < 2) return false
+
     const [iRow, iColumn] = Coordinate.coordsToIndices(currentSquare)
-    const pieceColour = PieceDetection.checkPieceColour(chessBoardArray[iRow][iColumn])
+    const pieceOnSquare = chessBoardArray[iRow] && chessBoardArray[iRow][iColumn]
+    const pieceColour = PieceDetection.checkPieceColour(pieceOnSquare)
 
     let diagonals = [
             [-1,-1], // Top Left

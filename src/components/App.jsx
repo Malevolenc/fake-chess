@@ -23,9 +23,12 @@ export default function App() {
   const [chessBoardArray, setChessBoardArray] = useState(FENtoArray(emptyBoardFEN))
   const [currentTurn, setCurrentTurn] = useState("white")
 
+  const [moveNumber, setMoveNumber] = useState(1)
+
   const [currentSquareSelected, setCurrentSquareSelected] = useState(null)
   const [currentPieceSelected, setCurrentPieceSelected] = useState("")
-  const [currentPieceMoves, setCurrentPieceMoves] = useState([])
+  const [currentLegalPieceMoves, setCurrentLegalPieceMoves] = useState([])
+  const [highlightedPieceMoves, setHighlightedPieceMoves] = useState([])
 
   const [whiteKingCoords, setWhiteKingCoords] = useState("")
   const [blackKingCoords, setBlackKingCoords] = useState("")
@@ -33,7 +36,7 @@ export default function App() {
   const [result, setResult] = useState("")
 
   // moveLogs[move number][white or black]
-  const [moveLogs, setMoveLogs] = useState([[]])
+  const [moveLogs, setMoveLogs] = useState([])
 
   useEffect(()=>{
       setWhiteKingCoords(()=>findKing("white", chessBoardArray))
@@ -44,23 +47,22 @@ export default function App() {
     let allPieceCoords = locatePieces(currentTurn, chessBoardArray)
     let allLegalMoves;
 
-    if (allPieceCoords.length !== 0 ){
+    if (allPieceCoords.length !== 0){
       if (currentTurn == "white"){
-        allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords)
-
-        if (allLegalMoves.length == 0){
-          setResult(()=>"White has been Checkmated")
-        }
-
-
-    } else if (currentTurn == "black"){
-        allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, blackKingCoords)
-
-        if (allLegalMoves.length == 0){
-          setResult(()=>"Black has been Checkmated")
+      allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords, moveNumber)
+      if (allLegalMoves.length == 0){
+        setResult(()=>"White has been Checkmated")
+      } 
+    }
+      else if (currentTurn == "black"){
+          allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, blackKingCoords, moveNumber)
+          if (allLegalMoves.length == 0){
+            setResult(()=>"Black has been Checkmated")
+          }
         }
     }
-    }
+
+    
 
     
   }, [chessBoardArray])
@@ -85,8 +87,9 @@ export default function App() {
     setCurrentTurn(()=>"white")
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
-    setMoveLogs(()=>[[]])
+    setMoveLogs(()=>[])
     setResult(()=>"")
+    setMoveNumber(()=>1)
   }
 
   function startTest(){
@@ -100,8 +103,9 @@ export default function App() {
     setCurrentTurn(()=>"white")
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
-    setMoveLogs(()=>[[]])
+    setMoveLogs(()=>[])
     setResult(()=>"")
+    setMoveNumber(()=>1)
   }
 
   return (
@@ -113,10 +117,12 @@ export default function App() {
       currentTurn, setCurrentTurn,
       currentSquareSelected, setCurrentSquareSelected,
       currentPieceSelected, setCurrentPieceSelected,
-      currentPieceMoves, setCurrentPieceMoves,
+      currentLegalPieceMoves, setCurrentLegalPieceMoves,
+      highlightedPieceMoves, setHighlightedPieceMoves,
       moveLogs, setMoveLogs,
       whiteKingCoords,setWhiteKingCoords,
-      blackKingCoords,setBlackKingCoords
+      blackKingCoords,setBlackKingCoords,
+      moveNumber, setMoveNumber
 
     }}>
 
