@@ -1,6 +1,6 @@
 import { Coordinate } from "./CoordinateClass";
 
-export default function moveObjectToNotation({initialCoords, finalCoords, currentPiece, capturedPiece, currentTurn, moveNumber, isCastle, isEnPassant, isPromotion, isCheck}){
+export default function moveObjectToNotation({initialCoords, finalCoords, currentPiece, capturedPiece, currentTurn, moveNumber, isCastle, isEnPassant, isPromotion, isCheck, promotionPiece}){
     let moveNotation;
     // General Movement
 
@@ -42,9 +42,14 @@ export default function moveObjectToNotation({initialCoords, finalCoords, curren
         }
     }
 
+    if (promotionPiece){
+        moveNotation+=` = ${promotionPiece.toUpperCase()}`
+    }
     if (isCheck){
         moveNotation+="+"
     }
+
+    
 
     return moveNotation
 }

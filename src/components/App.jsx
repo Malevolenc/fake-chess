@@ -172,7 +172,7 @@ export default function App() {
           id={"moveLogsElement"}/>
           <button onClick={clearBoard}>Clear Board</button>
           <button onClick={startGame}>Start Game</button>
-          <button onClick={startTest}>Start Test</button>
+          {/* <button onClick={startTest}>Start Test</button> */}
         </article>
         
       </section>

@@ -1,4 +1,4 @@
-export default function createMoveObject(initialCoords, finalCoords, currentPiece, capturedPiece, currentTurn, moveNumber, isCastle = false, isEnPassant= false, isPromotion=false, isCheck=false){
+export default function createMoveObject(initialCoords, finalCoords, currentPiece, capturedPiece, currentTurn, moveNumber, isCastle = false, isEnPassant= false, isCheck=false, promotionPiece=""){
     return {
         initialCoords: initialCoords,
         finalCoords: finalCoords,
@@ -8,7 +8,7 @@ export default function createMoveObject(initialCoords, finalCoords, currentPiec
         moveNumber: moveNumber,
         isCastle: isCastle,
         isEnPassant: isEnPassant,
-        isPromotion: isPromotion,
-        isCheck: isCheck
+        isCheck: isCheck,
+        promotionPiece: promotionPiece
     }
 }

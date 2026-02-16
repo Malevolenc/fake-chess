@@ -10,10 +10,14 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
     let startingPawnRow =  currentTurn == "white" ? 6 : 1
     let pawnDir = currentTurn == "white" ? -1 : 1
     let doublePawnMove = currentTurn == "white" ? iRow-2 : iRow+2
+
+    let promotionRow = currentTurn == "white" ? 0 : 7
+    const defaultPromotionPiece = "q"
     
     let currentPiece = chessBoardArray[iRow][iColumn]
     let capturedPiece;
     let selectedLegalMove;
+    
 
     if (chessBoardArray[fRow][fColumn]){
         capturedPiece = chessBoardArray[fRow][fColumn]
@@ -22,8 +26,18 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
     for (const legalMove of currentLegalPieceMoves){
         if (legalMove.finalCoords == finalCoords){
             selectedLegalMove = legalMove
+            break
         }
     }
+    const matchingMoves = currentLegalPieceMoves.filter(move=> move.finalCoords ===finalCoords)
+
+    if (matchingMoves.length === 1){
+        selectedLegalMove = matchingMoves[0]
+    } else{
+        selectedLegalMove = matchingMoves.filter(move=>move.promotionPiece.toLowerCase()===defaultPromotionPiece)[0]
+    }
+    // Work with a copy so we don't mutate move objects that may be stored elsewhere
+    const moveToLog = selectedLegalMove ? {...selectedLegalMove} : null
 
     setCastlingRights((prevCastlingRights)=>{
         const updatedCastlingRights = {...prevCastlingRights}
@@ -99,31 +113,35 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
                 }
             }
 
-        let enemyKingCoords = currentTurn == "white" ? findKing("black", updatedChessBoardArray) : findKing("white", updatedChessBoardArray)
-        if (squareIsAttacked(enemyKingCoords, updatedChessBoardArray, currentTurn)){
-            selectedLegalMove.isCheck = true
-        }
+        
 
         if (currentPiece.toLowerCase() == "p"){
-            if (selectedLegalMove.isEnPassant){
-                let [enPassantRow, enPassantColumn] = Coordinate.coordsToIndices(selectedLegalMove.finalCoords)
+            if (moveToLog && moveToLog.isEnPassant){
+                let [enPassantRow, enPassantColumn] = Coordinate.coordsToIndices(moveToLog.finalCoords)
                 enPassantRow -= pawnDir
                 updatedChessBoardArray[enPassantRow][enPassantColumn] = ""
             }
             if (iRow == startingPawnRow && fRow == doublePawnMove){
                 setEnPassantTarget(()=>Coordinate.indicesToCoords(fRow-pawnDir, fColumn))
             }
+
+            if (moveToLog && moveToLog.promotionPiece){
+                updatedChessBoardArray[fRow][fColumn] = moveToLog.promotionPiece
+            }
+
         } else{
             setEnPassantTarget(()=>"")
         }
-
-        
-        
-
+        // After all move effects (en-passant, promotion, castling rook moves), check for check
+        let enemyKingCoords = currentTurn == "white" ? findKing("black", updatedChessBoardArray) : findKing("white", updatedChessBoardArray)
+        if (squareIsAttacked(enemyKingCoords, updatedChessBoardArray, currentTurn)){
+            if (moveToLog) moveToLog.isCheck = true
+        }
     return updatedChessBoardArray
     })
 
-    updateMoveLogs(selectedLegalMove, setMoveLogs)
+    // Log the copied move (with isCheck / promotion applied)
+    if (moveToLog) updateMoveLogs(moveToLog, setMoveLogs)
     
 
     if (currentTurn == "black"){

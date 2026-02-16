@@ -19,7 +19,6 @@ export class PieceDetection{
                         moveNumber,
                         false,
                         false,
-                        false,
                         false
                     ))
                     break
@@ -34,7 +33,6 @@ export class PieceDetection{
                         chessBoardArray[iRow][i],
                         currentTurn,
                         moveNumber,
-                        false,
                         false,
                         false,
                         false
@@ -55,7 +53,6 @@ export class PieceDetection{
                         moveNumber,
                         false,
                         false,
-                        false,
                         false
                     ))
                     break
@@ -70,7 +67,6 @@ export class PieceDetection{
                         chessBoardArray[iRow][i],
                         currentTurn,
                         moveNumber,
-                        false,
                         false,
                         false,
                         false
@@ -97,7 +93,6 @@ export class PieceDetection{
                         moveNumber,
                         false,
                         false,
-                        false,
                         false
                     ))
                     break
@@ -113,9 +108,9 @@ export class PieceDetection{
                     currentTurn,
                     moveNumber,
                     false,
-                        false,
-                        false,
-                        false
+                    false,
+                    false,
+                    false
                 ))
             }
         }
@@ -132,7 +127,6 @@ export class PieceDetection{
                         moveNumber,
                         false,
                         false,
-                        false,
                         false
                     ))
                     break
@@ -147,7 +141,6 @@ export class PieceDetection{
                         chessBoardArray[i][iColumn],
                         currentTurn,
                         moveNumber,
-                        false,
                         false,
                         false,
                         false
@@ -185,7 +178,6 @@ export class PieceDetection{
                             moveNumber,
                             false,
                             false,
-                            false,
                             false
                         ))
                         
@@ -201,7 +193,10 @@ export class PieceDetection{
                     chessBoardArray[iRow][iColumn],
                     chessBoardArray[row][column],
                     currentTurn,
-                    moveNumber
+                    moveNumber,
+                    false,
+                    false,
+                    false
                 ))
 
                 row+= dR

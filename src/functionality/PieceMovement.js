@@ -33,6 +33,7 @@ export class PieceMovement{
     static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber, enPassantTarget){
         let dir = currentTurn === "white" ? -1 : 1
         let enPassantRows = currentTurn === "white" ? 3 : 4
+        let promotionRow = currentTurn === "white" ? 0 : 7
         let moveObjects = []
 
         let newRow = iRow + dir;
@@ -41,7 +42,8 @@ export class PieceMovement{
         if (newRow >= 0 && newRow <= 7){
              // One Move Forward
             if (!chessBoardArray[newRow][iColumn]){
-                moveObjects.push(createMoveObject(
+                if (newRow != promotionRow){
+                    moveObjects.push(createMoveObject(
                     Coordinate.indicesToCoords(iRow,iColumn),
                     Coordinate.indicesToCoords(newRow, iColumn),
                     chessBoardArray[iRow][iColumn],
@@ -51,10 +53,24 @@ export class PieceMovement{
                     false,
                     false,
                     false,
-                    false
-                ))
-
-
+                    ""))
+                } else{
+                    for (const piece of ["Q", "R", "B", "N"]){
+                        moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[newRow][iColumn],
+                        currentTurn,
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        currentTurn == "white" ? piece : piece.toLowerCase()
+                        ))
+                    }
+                }
+                
                 // Two Moves Forward
                 const startingRow = currentTurn === "white" ? 6 : 1
 
@@ -75,14 +91,35 @@ export class PieceMovement{
             // Left Diagonal Captures for pieces not in A-File
             if (iColumn > 0){
                 if (chessBoardArray[newRow][iColumn-1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn-1]) !== currentTurn){
-                    moveObjects.push(createMoveObject(
+                    if (newRow != promotionRow){
+                        moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(newRow, iColumn-1),
                         chessBoardArray[iRow][iColumn],
-                        chessBoardArray[iRow][iColumn-1],
+                        chessBoardArray[newRow][iColumn-1],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        ""
                     ))
+                    } else{
+                        for (const piece of ["Q", "R", "B", "N"]){
+                            moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(newRow, iColumn-1),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[newRow][iColumn-1],
+                            currentTurn,
+                            moveNumber,
+                            false,
+                            false,
+                            false,
+                            currentTurn == "white" ? piece : piece.toLowerCase()
+                            ))
+                        }
+                    }
                 }
 
                 if (iRow == enPassantRows && Coordinate.indicesToCoords(newRow, iColumn-1) === enPassantTarget){
@@ -95,42 +132,47 @@ export class PieceMovement{
                         moveNumber,
                         false,
                         true,
-                        false,
                         false
                     ))
                 }
+                
             }
 
             // Right Diagonal Captures for pieces not in H-File
             if (iColumn < 7){
                 if (chessBoardArray[newRow][iColumn+1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn+1]) !== currentTurn){
-                    moveObjects.push(createMoveObject(
+                    if (newRow != promotionRow){
+                        moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(newRow, iColumn+1),
                         chessBoardArray[iRow][iColumn],
-                        chessBoardArray[iRow][iColumn+1],
-                        currentTurn,
-                        moveNumber
-                    ))
-                }
-
-                if (iRow == enPassantRows && Coordinate.indicesToCoords(newRow, iColumn+1) === enPassantTarget){
-                    moveObjects.push(createMoveObject(
-                        Coordinate.indicesToCoords(iRow,iColumn),
-                        Coordinate.indicesToCoords(newRow, iColumn+1),
-                        chessBoardArray[iRow][iColumn],
-                        chessBoardArray[iRow][iColumn+1],
+                        chessBoardArray[newRow][iColumn+1],
                         currentTurn,
                         moveNumber,
                         false,
-                        true,
                         false,
-                        false
+                        false,
+                        ""
                     ))
+                    } else{
+                        for (const piece of ["Q", "R", "B", "N"]){
+                            moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(newRow, iColumn+1),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[newRow][iColumn+1],
+                            currentTurn,
+                            moveNumber,
+                            false,
+                            false,
+                            false,
+                            currentTurn == "white" ? piece : piece.toLowerCase()
+                            ))
+                        }
+                    }
                 }
             }
         }
-        
         return moveObjects
     }
 
@@ -160,7 +202,6 @@ export class PieceMovement{
                     chessBoardArray[row][column],
                     currentTurn,
                     moveNumber,
-                    false,
                     false,
                     false,
                     false
@@ -203,7 +244,6 @@ export class PieceMovement{
                     moveNumber,
                     false,
                     false,
-                    false,
                     false
                 ))
             }
@@ -227,7 +267,6 @@ export class PieceMovement{
                             moveNumber,
                             true,
                             false,
-                            false,
                             false
                         ))
                 }
@@ -249,7 +288,6 @@ export class PieceMovement{
                             currentTurn,
                             moveNumber,
                             true,
-                            false,
                             false,
                             false
                         ))
@@ -273,7 +311,6 @@ export class PieceMovement{
                             moveNumber,
                             true,
                             false,
-                            false,
                             false
                         ))
                 }
@@ -295,7 +332,6 @@ export class PieceMovement{
                             currentTurn,
                             moveNumber,
                             true,
-                            false,
                             false,
                             false
                         ))

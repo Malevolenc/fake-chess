@@ -15,3 +15,11 @@ Additionally, this project was only focusing on how to use React, so anyone can 
 Planning to add other features such as:
 - Castling
 - Checkmating
+
+16/2/2026:
+Finally finished the chess side of the project, time to do QOL stuff like:
+- Choosing which piece to promote to instead of defaulting to queen
+- Commenting on my code cuz I don't want to forget how it works once I become busy again
+- Designing my own assets (chess pieces, colour scheme, UI)
+
+Then after that, I will start with the chess engine :ooooooooooooooooooooooooooooooooooo
