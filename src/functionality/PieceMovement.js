@@ -2,6 +2,7 @@ import checkSquare from "./checkSquare";
 import { Coordinate } from "./CoordinateClass";
 import { PieceDetection } from "./PieceDetectionClass";
 import createMoveObject from "./createMoveObject";
+import squareIsAttacked from "./squareIsAttacked";
 
 export class PieceMovement{
     static queenMovement(chessBoardArray, iRow,iColumn, currentTurn, moveNumber){
@@ -29,8 +30,9 @@ export class PieceMovement{
         return possibleMoves
     }
 
-    static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber){
+    static pawnMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber, enPassantTarget){
         let dir = currentTurn === "white" ? -1 : 1
+        let enPassantRows = currentTurn === "white" ? 3 : 4
         let moveObjects = []
 
         let newRow = iRow + dir;
@@ -45,7 +47,11 @@ export class PieceMovement{
                     chessBoardArray[iRow][iColumn],
                     chessBoardArray[newRow][iColumn],
                     currentTurn,
-                    moveNumber
+                    moveNumber,
+                    false,
+                    false,
+                    false,
+                    false
                 ))
 
 
@@ -66,7 +72,6 @@ export class PieceMovement{
                     }
                 }
             }
-
             // Left Diagonal Captures for pieces not in A-File
             if (iColumn > 0){
                 if (chessBoardArray[newRow][iColumn-1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn-1]) !== currentTurn){
@@ -74,9 +79,24 @@ export class PieceMovement{
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(newRow, iColumn-1),
                         chessBoardArray[iRow][iColumn],
-                        chessBoardArray[newRow][iColumn-1],
+                        chessBoardArray[iRow][iColumn-1],
                         currentTurn,
                         moveNumber
+                    ))
+                }
+
+                if (iRow == enPassantRows && Coordinate.indicesToCoords(newRow, iColumn-1) === enPassantTarget){
+                    moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn-1),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[iRow][iColumn-1],
+                        currentTurn,
+                        moveNumber,
+                        false,
+                        true,
+                        false,
+                        false
                     ))
                 }
             }
@@ -88,9 +108,24 @@ export class PieceMovement{
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(newRow, iColumn+1),
                         chessBoardArray[iRow][iColumn],
-                        chessBoardArray[newRow][iColumn+1],
+                        chessBoardArray[iRow][iColumn+1],
                         currentTurn,
                         moveNumber
+                    ))
+                }
+
+                if (iRow == enPassantRows && Coordinate.indicesToCoords(newRow, iColumn+1) === enPassantTarget){
+                    moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn+1),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[iRow][iColumn+1],
+                        currentTurn,
+                        moveNumber,
+                        false,
+                        true,
+                        false,
+                        false
                     ))
                 }
             }
@@ -124,7 +159,11 @@ export class PieceMovement{
                     chessBoardArray[iRow][iColumn],
                     chessBoardArray[row][column],
                     currentTurn,
-                    moveNumber
+                    moveNumber,
+                    false,
+                    false,
+                    false,
+                    false
                 ))
                 
             }
@@ -133,13 +172,17 @@ export class PieceMovement{
         return moveObjects
     }
 
-    static kingMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber){
+    static kingMovement(chessBoardArray, iRow, iColumn, currentTurn, moveNumber, castlingRights){
         let moveObjects = []
         let directions = [
             [-1,-1],[-1,0],[-1,1],
             [0,-1],        [0,1],
             [1,-1],[1,0],[1,1]
         ]
+        let {
+            whiteKingSide, whiteQueenSide,
+            blackKingSide, blackQueenSide
+        } = castlingRights
 
         for (const [dR, dC] of directions){
             let row = iRow+dR
@@ -157,12 +200,108 @@ export class PieceMovement{
                     chessBoardArray[iRow][iColumn],
                     chessBoardArray[row][column],
                     currentTurn,
-                    moveNumber
+                    moveNumber,
+                    false,
+                    false,
+                    false,
+                    false
                 ))
-                
             }
         }
 
+        if (currentTurn == "white"){
+            if (whiteKingSide) {
+                if (chessBoardArray[7][7] === "R" && // rook exists
+                    !chessBoardArray[7][5] &&
+                    !chessBoardArray[7][6] && // If f1 and g1 are not occupied
+                    !squareIsAttacked("e1", chessBoardArray, "black") &&
+                    !squareIsAttacked("f1", chessBoardArray, "black") &&
+                    !squareIsAttacked("g1", chessBoardArray, "black")){
+
+                        moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(iRow,iColumn+2),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[iRow][iColumn+2],
+                            currentTurn,
+                            moveNumber,
+                            true,
+                            false,
+                            false,
+                            false
+                        ))
+                }
+            }
+            if (whiteQueenSide) {
+                if (chessBoardArray[7][0] === "R" && // rook exists
+                    !chessBoardArray[7][3] &&
+                    !chessBoardArray[7][2] && // If d1 and c1 are not occupied 
+                    !squareIsAttacked("e1", chessBoardArray, "black") &&
+                    !squareIsAttacked("d1", chessBoardArray, "black") &&
+                    !squareIsAttacked("c1", chessBoardArray, "black") &&
+                    !squareIsAttacked("c1", chessBoardArray, "black")){
+
+                        moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(iRow,iColumn-2),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[iRow][iColumn-2],
+                            currentTurn,
+                            moveNumber,
+                            true,
+                            false,
+                            false,
+                            false
+                        ))
+                }
+            }
+        } else if (currentTurn == "black"){
+            if (blackKingSide) {
+                if (chessBoardArray[0][7] === "r" && // rook exists
+                    !chessBoardArray[0][5] &&
+                    !chessBoardArray[0][6] && // If f8 and g8 are not occupied
+                    !squareIsAttacked("e8", chessBoardArray, "white") &&
+                    !squareIsAttacked("f8", chessBoardArray, "white") &&
+                    !squareIsAttacked("g8", chessBoardArray, "white")){
+
+                        moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(iRow,iColumn+2),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[iRow][iColumn+2],
+                            currentTurn,
+                            moveNumber,
+                            true,
+                            false,
+                            false,
+                            false
+                        ))
+                }
+            }
+            if (blackQueenSide) {
+                if (chessBoardArray[0][0] === "r" && // rook exists
+                    !chessBoardArray[0][3] &&
+                    !chessBoardArray[0][2] && // If d8 and c8 are not occupied 
+                    !squareIsAttacked("e8", chessBoardArray, "white") &&
+                    !squareIsAttacked("d8", chessBoardArray, "white") &&
+                    !squareIsAttacked("c8", chessBoardArray, "white") &&
+                    !squareIsAttacked("c8", chessBoardArray, "white")){
+
+                        moveObjects.push(createMoveObject(
+                            Coordinate.indicesToCoords(iRow,iColumn),
+                            Coordinate.indicesToCoords(iRow,iColumn-2),
+                            chessBoardArray[iRow][iColumn],
+                            chessBoardArray[iRow][iColumn-2],
+                            currentTurn,
+                            moveNumber,
+                            true,
+                            false,
+                            false,
+                            false
+                        ))
+                }
+            }
+        }
         return moveObjects
     }
 }

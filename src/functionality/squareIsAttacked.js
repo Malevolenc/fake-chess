@@ -1,14 +1,13 @@
 import { Coordinate } from "./CoordinateClass"
 import { PieceDetection } from "./PieceDetectionClass"
 
-export default function squareIsAttacked(currentSquare, chessBoardArray){
-
+export default function squareIsAttacked(currentSquare, chessBoardArray, attackerColour){
     // Exits the function early if no kings are on the board
     if (!currentSquare || typeof currentSquare !== 'string' || currentSquare.length < 2) return false
 
     const [iRow, iColumn] = Coordinate.coordsToIndices(currentSquare)
-    const pieceOnSquare = chessBoardArray[iRow] && chessBoardArray[iRow][iColumn]
-    const pieceColour = PieceDetection.checkPieceColour(pieceOnSquare)
+    const currentPiece = chessBoardArray[iRow][iColumn]
+    const pieceColour = PieceDetection.checkPieceColour(currentPiece)
 
     let diagonals = [
             [-1,-1], // Top Left
@@ -33,20 +32,12 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
     // Checks all squares left of the original square
     for (let i = iColumn-1; i >= 0; i--){
         // If the square being checked has a piece on it
-        if (chessBoardArray[iRow][i]){
-            if (pieceColour == "white"){
-                if (chessBoardArray[iRow][i] == "q" || chessBoardArray[iRow][i] == "r"){
-                    return true
-                } else{
-                    break
-                }
-            }
-            else if (pieceColour == "black"){
-                if (chessBoardArray[iRow][i] == "Q" || chessBoardArray[iRow][i] == "R"){
-                    return true
-                } else{
-                    break
-                }
+         if (chessBoardArray[iRow][i]){
+            if (PieceDetection.checkPieceColour(chessBoardArray[iRow][i]) === attackerColour &&
+            (chessBoardArray[iRow][i].toLowerCase() == "q" || chessBoardArray[iRow][i].toLowerCase() == "r")){
+                return true
+            } else{
+                break
             }
         }
     }
@@ -55,19 +46,11 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
     for (let i = iColumn+1; i < 8; i++){
         // If the square being checked has a piece on it
         if (chessBoardArray[iRow][i]){
-            if (pieceColour == "white"){
-                if (chessBoardArray[iRow][i] == "q" || chessBoardArray[iRow][i] == "r"){
-                    return true
-                } else{
-                    break
-                }
-            }
-            else if (pieceColour == "black"){
-                if (chessBoardArray[iRow][i] == "Q" || chessBoardArray[iRow][i] == "R"){
-                    return true
-                } else{
-                    break
-                }
+            if (PieceDetection.checkPieceColour(chessBoardArray[iRow][i]) === attackerColour &&
+            (chessBoardArray[iRow][i].toLowerCase() == "q" || chessBoardArray[iRow][i].toLowerCase() == "r")){
+                return true
+            } else{
+                break
             }
         }
     }
@@ -76,19 +59,11 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
     for (let i = iRow-1; i >= 0; i--){
         // If the square being checked has a piece on it
         if (chessBoardArray[i][iColumn]){
-            if (pieceColour == "white"){
-                if (chessBoardArray[i][iColumn] == "q" || chessBoardArray[i][iColumn] == "r"){
-                    return true
-                } else{
-                    break
-                }
-            }
-            else if (pieceColour == "black"){
-                if (chessBoardArray[i][iColumn] == "Q" || chessBoardArray[i][iColumn] == "R"){
-                    return true
-                } else{
-                    break
-                }
+            if (PieceDetection.checkPieceColour(chessBoardArray[i][iColumn]) === attackerColour &&
+            (chessBoardArray[i][iColumn].toLowerCase() == "q" || chessBoardArray[i][iColumn].toLowerCase() == "r")){
+                return true
+            } else{
+                break
             }
         }
     }
@@ -97,19 +72,11 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
     for (let i = iRow+1; i < 8; i++){
         // If the square being checked has a piece on it
         if (chessBoardArray[i][iColumn]){
-            if (pieceColour == "white"){
-                if (chessBoardArray[i][iColumn] == "q" || chessBoardArray[i][iColumn] == "r"){
-                    return true
-                } else{
-                    break
-                }
-            }
-            else if (pieceColour == "black"){
-                if (chessBoardArray[i][iColumn] == "Q" || chessBoardArray[i][iColumn] == "R"){
-                    return true
-                } else{
-                    break
-                }
+            if (PieceDetection.checkPieceColour(chessBoardArray[i][iColumn]) === attackerColour &&
+            (chessBoardArray[i][iColumn].toLowerCase() == "q" || chessBoardArray[i][iColumn].toLowerCase() == "r")){
+                return true
+            } else{
+                break
             }
         }
     }
@@ -121,20 +88,13 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
 
         while (row >= 0 && row < 8 && column >=0 && column < 8){
             if (chessBoardArray[row][column]){
-                if (pieceColour == "white"){
-                    if (chessBoardArray[row][column] == "q" || chessBoardArray[row][column] == "b"){
-                        return true
-                    } else{
+                if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) === attackerColour &&
+                (chessBoardArray[row][column].toLowerCase() == "q" || chessBoardArray[row][column].toLowerCase() == "b")){
+                    return true
+                } else{
                     break
-                }
-                } else if (pieceColour == "black"){
-                    if (chessBoardArray[row][column] == "Q" || chessBoardArray[row][column] == "B"){
-                        return true
-                    } else{
-                    break
-                }
-                }
             }
+        }
             row+= dR
             column+=dC
         } 
@@ -146,12 +106,9 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
         let column = iColumn +dC
 
         if (row >= 0 && row < 8 && column >= 0 && column < 8){
-            if (pieceColour == "white"){
-                if (chessBoardArray[row][column] == "n"){
-                    return true
-                }
-            } else{
-                if (chessBoardArray[row][column] == "N"){
+            if (chessBoardArray[row][column]){
+                if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) === attackerColour &&
+                    chessBoardArray[row][column].toLowerCase() == "n"){
                     return true
                 }
             }
@@ -165,12 +122,9 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
 
     for (const column of pawnColumns){
         if (pawnRow >= 0 && pawnRow < 8 && column >= 0 && column < 8){
-            if (pieceColour == "white"){
-                if (chessBoardArray[pawnRow][column] == "p"){
-                    return true
-                }
-            } else{
-                if (chessBoardArray[pawnRow][column] == "P"){
+            if (chessBoardArray[pawnRow][column]){
+                if (PieceDetection.checkPieceColour(chessBoardArray[pawnRow][column]) === attackerColour &&
+                    chessBoardArray[pawnRow][column].toLowerCase() == "p"){
                     return true
                 }
             }
@@ -183,12 +137,9 @@ export default function squareIsAttacked(currentSquare, chessBoardArray){
         let column = iColumn + dC
 
         if (row >= 0 && row < 8 && column >= 0 && column < 8){
-            if (pieceColour == "white"){
-                if (chessBoardArray[row][column] == "k"){
-                    return true
-                }
-            } else if (pieceColour == "black"){
-                if (chessBoardArray[row][column] == "K"){
+            if (chessBoardArray[row][column]){
+                if (PieceDetection.checkPieceColour(chessBoardArray[row][column]) === attackerColour &&
+                    chessBoardArray[row][column].toLowerCase() == "k"){
                     return true
                 }
             }

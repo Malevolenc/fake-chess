@@ -1,6 +1,6 @@
 import { PieceMovement } from "./PieceMovement";
 
-export default function genPseudoLegalPieceMoves(currentPieceSelected, chessBoardArray,iRow,iColumn, currentTurn, moveNumber){
+export default function genPseudoLegalPieceMoves(currentPieceSelected, chessBoardArray,iRow,iColumn, currentTurn, moveNumber, enPassantTarget, castlingRights){
     let possibleMoves = []
     switch (currentPieceSelected.toLowerCase()){
             case "q":
@@ -16,7 +16,7 @@ export default function genPseudoLegalPieceMoves(currentPieceSelected, chessBoar
                 break;
     
             case "p":
-                possibleMoves = PieceMovement.pawnMovement(chessBoardArray,iRow,iColumn, currentTurn, moveNumber)
+                possibleMoves = PieceMovement.pawnMovement(chessBoardArray,iRow,iColumn, currentTurn, moveNumber, enPassantTarget)
                 break;
     
             case "n":
@@ -24,7 +24,7 @@ export default function genPseudoLegalPieceMoves(currentPieceSelected, chessBoar
                 break;
     
             case "k":
-                possibleMoves = PieceMovement.kingMovement(chessBoardArray,iRow,iColumn, currentTurn, moveNumber)
+                possibleMoves = PieceMovement.kingMovement(chessBoardArray,iRow,iColumn, currentTurn, moveNumber, castlingRights)
                 break;
         }
 

@@ -33,6 +33,14 @@ export default function App() {
   const [whiteKingCoords, setWhiteKingCoords] = useState("")
   const [blackKingCoords, setBlackKingCoords] = useState("")
 
+  const [enPassantTarget, setEnPassantTarget] = useState("")
+  const [castlingRights, setCastlingRights] = useState({
+    whiteKingSide: true,
+    whiteQueenSide: true,
+    blackKingSide: true,
+    blackQueenSide: true
+  })
+
   const [result, setResult] = useState("")
 
   // moveLogs[move number][white or black]
@@ -46,23 +54,26 @@ export default function App() {
   useEffect(()=>{
     let allPieceCoords = locatePieces(currentTurn, chessBoardArray)
     let allLegalMoves;
+    let lastMove = moveLogs.at(-1)
 
     if (allPieceCoords.length !== 0){
       if (currentTurn == "white"){
-      allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords, moveNumber)
-      if (allLegalMoves.length == 0){
-        setResult(()=>"White has been Checkmated")
-      } 
-    }
-      else if (currentTurn == "black"){
-          allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, blackKingCoords, moveNumber)
-          if (allLegalMoves.length == 0){
-            setResult(()=>"Black has been Checkmated")
-          }
+        allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords, moveNumber, enPassantTarget, castlingRights)
+        if (allLegalMoves.length == 0 && lastMove.isCheck){
+          setResult(()=>"White has been Checkmated")
+        } else if (allLegalMoves.length == 0 && !lastMove.isCheck){
+            setResult(()=>"Stalemate")
         }
     }
-
-    
+      else if (currentTurn == "black"){
+          allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, blackKingCoords, moveNumber, enPassantTarget, castlingRights)
+          if (allLegalMoves.length == 0 && lastMove.isCheck){
+            setResult(()=>"Black has been Checkmated")
+          }  else if (allLegalMoves.length == 0 && !lastMove.isCheck){
+              setResult(()=>"Stalemate")
+            }
+        }
+    }
 
     
   }, [chessBoardArray])
@@ -74,6 +85,8 @@ export default function App() {
     setCurrentPieceSelected(()=>"")
     setMoveLogs(()=>[[]])
     setResult(()=>"")
+    setCurrentLegalPieceMoves(()=>[])
+    setHighlightedPieceMoves(()=>[])
   }
 
   function startGame(){
@@ -88,9 +101,19 @@ export default function App() {
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
     setMoveLogs(()=>[])
+    setCurrentLegalPieceMoves(()=>[])
+    setHighlightedPieceMoves(()=>[])
     setResult(()=>"")
     setMoveNumber(()=>1)
-  }
+    setEnPassantTarget(()=>"")
+    setCastlingRights(()=>{
+      return {
+      whiteKingSide: true,
+      whiteQueenSide: true,
+      blackKingSide: true,
+      blackQueenSide: true
+      }}
+    )}
 
   function startTest(){
     const newBoard = FENtoArray(testBoardFEN)
@@ -103,9 +126,19 @@ export default function App() {
     setCurrentTurn(()=>"white")
     setCurrentSquareSelected(()=>"")
     setCurrentPieceSelected(()=>"")
+    setCurrentLegalPieceMoves(()=>[])
+    setHighlightedPieceMoves(()=>[])
     setMoveLogs(()=>[])
     setResult(()=>"")
     setMoveNumber(()=>1)
+    setEnPassantTarget(()=>"")
+    setCastlingRights(()=>{
+      return {
+      whiteKingSide: true,
+      whiteQueenSide: true,
+      blackKingSide: true,
+      blackQueenSide: true
+      }})
   }
 
   return (
@@ -122,7 +155,9 @@ export default function App() {
       moveLogs, setMoveLogs,
       whiteKingCoords,setWhiteKingCoords,
       blackKingCoords,setBlackKingCoords,
-      moveNumber, setMoveNumber
+      moveNumber, setMoveNumber,
+      enPassantTarget, setEnPassantTarget,
+      castlingRights, setCastlingRights
 
     }}>
 

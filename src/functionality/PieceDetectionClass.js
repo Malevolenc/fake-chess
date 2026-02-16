@@ -16,7 +16,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[iRow][i],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
                     break
                 } else{
@@ -29,7 +33,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[iRow][i],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
             }
         }
@@ -40,11 +48,15 @@ export class PieceDetection{
                 if (this.checkPieceColour(chessBoardArray[iRow][i]) != currentTurn){
                     moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
-                        Coordinate.indicesToCoords(i, iColumn),
+                        Coordinate.indicesToCoords(iRow, i),
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[iRow][i],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
                     break
                 } else{
@@ -57,7 +69,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[iRow][i],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
             }
         }
@@ -67,6 +83,7 @@ export class PieceDetection{
     // Checks all squares vertical to a position
     static checkVertical(chessBoardArray, iRow,iColumn,currentTurn, moveNumber){
         let moveObjects = []
+        let currentPiece = chessBoardArray[iRow][iColumn]
 
         for (let i = iRow-1; i >= 0; i--){
             if (chessBoardArray[i][iColumn]){
@@ -77,7 +94,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[i][iColumn],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
                     break
                 } else{
@@ -90,7 +111,11 @@ export class PieceDetection{
                     chessBoardArray[iRow][iColumn],
                     chessBoardArray[i][iColumn],
                     currentTurn,
-                    moveNumber
+                    moveNumber,
+                    false,
+                        false,
+                        false,
+                        false
                 ))
             }
         }
@@ -104,7 +129,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[i][iColumn],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
                     break
                 } else{
@@ -117,7 +146,11 @@ export class PieceDetection{
                         chessBoardArray[iRow][iColumn],
                         chessBoardArray[i][iColumn],
                         currentTurn,
-                        moveNumber
+                        moveNumber,
+                        false,
+                        false,
+                        false,
+                        false
                     ))
             }
         }
@@ -149,7 +182,11 @@ export class PieceDetection{
                             chessBoardArray[iRow][iColumn],
                             chessBoardArray[row][column],
                             currentTurn,
-                            moveNumber
+                            moveNumber,
+                            false,
+                            false,
+                            false,
+                            false
                         ))
                         
                         break
