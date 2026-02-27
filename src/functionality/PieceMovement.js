@@ -152,8 +152,7 @@ export class PieceMovement{
                         false,
                         false,
                         false,
-                        ""
-                    ))
+                        ""))
                     } else{
                         for (const piece of ["Q", "R", "B", "N"]){
                             moveObjects.push(createMoveObject(
@@ -170,6 +169,20 @@ export class PieceMovement{
                             ))
                         }
                     }
+                }
+
+                if (iRow == enPassantRows && Coordinate.indicesToCoords(newRow, iColumn+1) === enPassantTarget){
+                    moveObjects.push(createMoveObject(
+                        Coordinate.indicesToCoords(iRow,iColumn),
+                        Coordinate.indicesToCoords(newRow, iColumn+1),
+                        chessBoardArray[iRow][iColumn],
+                        chessBoardArray[iRow][iColumn+1],
+                        currentTurn,
+                        moveNumber,
+                        false,
+                        true,
+                        false
+                    ))
                 }
             }
         }
