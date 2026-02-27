@@ -26,9 +26,13 @@ export default function moveObjectToNotation({initialCoords, finalCoords, curren
     // Capture moves
     } 
     else if (capturedPiece){
+        // If pawn captures
         if (capturedPiece.toLowerCase() == "p"){
+            // If the attacking piece is a pawn, don't include the piece, only the originating rank
             if (currentPiece.toLowerCase() == "p"){
                 moveNotation = `${initialCoords[0]}x${finalCoords}`
+            
+            // else, add the name of the piece
             } else{
                 moveNotation = `${currentPiece.toUpperCase()}x${finalCoords}`
             }
@@ -48,8 +52,6 @@ export default function moveObjectToNotation({initialCoords, finalCoords, curren
     if (isCheck){
         moveNotation+="+"
     }
-
     
-
     return moveNotation
 }

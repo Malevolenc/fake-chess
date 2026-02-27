@@ -11,24 +11,10 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
     let pawnDir = currentTurn == "white" ? -1 : 1
     let doublePawnMove = currentTurn == "white" ? iRow-2 : iRow+2
 
-    let promotionRow = currentTurn == "white" ? 0 : 7
     const defaultPromotionPiece = "q"
     
-    let currentPiece = chessBoardArray[iRow][iColumn]
-    let capturedPiece;
     let selectedLegalMove;
-    
 
-    if (chessBoardArray[fRow][fColumn]){
-        capturedPiece = chessBoardArray[fRow][fColumn]
-    }
-
-    for (const legalMove of currentLegalPieceMoves){
-        if (legalMove.finalCoords == finalCoords){
-            selectedLegalMove = legalMove
-            break
-        }
-    }
     const matchingMoves = currentLegalPieceMoves.filter(move=> move.finalCoords ===finalCoords)
 
     if (matchingMoves.length === 1){
@@ -36,13 +22,17 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
     } else{
         selectedLegalMove = matchingMoves.filter(move=>move.promotionPiece.toLowerCase()===defaultPromotionPiece)[0]
     }
+
+    let currentPiece = selectedLegalMove.currentPiece;
+    let capturedPiece = selectedLegalMove.capturedPiece;
+
     // Work with a copy so we don't mutate move objects that may be stored elsewhere
     const moveToLog = selectedLegalMove ? {...selectedLegalMove} : null
 
     setCastlingRights((prevCastlingRights)=>{
         const updatedCastlingRights = {...prevCastlingRights}
-        // If the piece being moved is a rook
-        if (currentPiece.toLowerCase() === "r"){
+        // If the piece being moved is a rook or the piece being captured is the rook
+        if (currentPiece.toLowerCase() === "r" || (capturedPiece && capturedPiece.toLowerCase() == "r")){
             if (currentTurn === "black") {
                 if (iRow === 0 && iColumn === 0) updatedCastlingRights.blackQueenSide = false;
                 if (iRow === 0 && iColumn === 7) updatedCastlingRights.blackKingSide = false;
@@ -51,19 +41,6 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
             if (currentTurn === "white") {
                 if (iRow === 7 && iColumn === 0) updatedCastlingRights.whiteQueenSide = false;
                 if (iRow === 7 && iColumn === 7) updatedCastlingRights.whiteKingSide = false;
-            }
-        } 
-
-        // If the piece being captured is a rook
-        if (capturedPiece && capturedPiece.toLowerCase() == "r"){
-            if (currentTurn === "white") {
-                if (fRow === 0 && fColumn === 0) updatedCastlingRights.blackQueenSide = false;
-                if (fRow === 0 && fColumn === 7) updatedCastlingRights.blackKingSide = false;
-            }
-
-            if (currentTurn === "black") {
-                if (fRow === 7 && fColumn === 0) updatedCastlingRights.whiteQueenSide = false;
-                if (fRow === 7 && fColumn === 7) updatedCastlingRights.whiteKingSide = false;
             }
         }
 
@@ -86,9 +63,13 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
     setChessBoardArray((prevChessBoardArray)=>{
         const updatedChessBoardArray = [...prevChessBoardArray]
 
+        // Moves the piece from the original square to the new square
+
         updatedChessBoardArray[iRow][iColumn] = ""
         updatedChessBoardArray[fRow][fColumn] = currentPiece
 
+
+        // If the  move is a castle move, move both the king and rook
         if (selectedLegalMove.isCastle){
             // Kingside Castle
             if ((iColumn < fColumn) && (iRow == 0 || iRow == 7)){
@@ -112,19 +93,20 @@ export default function movePiece(initialCoords, finalCoords, chessBoardArray, s
                     }
                 }
             }
-
-        
-
+        // Pawn Movement
         if (currentPiece.toLowerCase() == "p"){
+            // If en passant move, do the thingy
             if (moveToLog && moveToLog.isEnPassant){
                 let [enPassantRow, enPassantColumn] = Coordinate.coordsToIndices(moveToLog.finalCoords)
                 enPassantRow -= pawnDir
                 updatedChessBoardArray[enPassantRow][enPassantColumn] = ""
             }
+            // If a pawn moves two squares from its initial square, it becomes an en passant target
             if (iRow == startingPawnRow && fRow == doublePawnMove){
                 setEnPassantTarget(()=>Coordinate.indicesToCoords(fRow-pawnDir, fColumn))
             }
 
+            // If promotion, replace the piece on the new square with the promotion piece
             if (moveToLog && moveToLog.promotionPiece){
                 updatedChessBoardArray[fRow][fColumn] = moveToLog.promotionPiece
             }

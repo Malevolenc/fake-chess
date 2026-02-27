@@ -137,7 +137,6 @@ export class PieceMovement{
                 }
                 
             }
-
             // Right Diagonal Captures for pieces not in H-File
             if (iColumn < 7){
                 if (chessBoardArray[newRow][iColumn+1] && PieceDetection.checkPieceColour(chessBoardArray[newRow][iColumn+1]) !== currentTurn){
@@ -238,6 +237,7 @@ export class PieceMovement{
             blackKingSide, blackQueenSide
         } = castlingRights
 
+        // Only checks 1 square moves
         for (const [dR, dC] of directions){
             let row = iRow+dR
             let column = iColumn+dC
@@ -262,6 +262,7 @@ export class PieceMovement{
             }
         }
 
+        // Checks castling for white
         if (currentTurn == "white"){
             if (whiteKingSide) {
                 if (chessBoardArray[7][7] === "R" && // rook exists
@@ -306,7 +307,9 @@ export class PieceMovement{
                         ))
                 }
             }
-        } else if (currentTurn == "black"){
+        } 
+        // Checks castling for black
+        else if (currentTurn == "black"){
             if (blackKingSide) {
                 if (chessBoardArray[0][7] === "r" && // rook exists
                     !chessBoardArray[0][5] &&

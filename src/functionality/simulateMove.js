@@ -1,5 +1,6 @@
 import { Coordinate } from "./CoordinateClass";
 
+// simulateMove returns a new chessboard array that has the new position
 export default function simulateMove(chessBoardArray, initialCoords, finalCoords, promotionPiece=""){
     let [iRow, iColumn] = Coordinate.coordsToIndices(initialCoords)
     let [fRow, fColumn] = Coordinate.coordsToIndices(finalCoords)

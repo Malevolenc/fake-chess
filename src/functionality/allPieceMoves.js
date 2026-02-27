@@ -1,5 +1,6 @@
 import { PieceMovement } from "./PieceMovement";
 
+// allPieceMoves checks which piece is being moved and calls the appropriate function.
 export default function allPieceMoves(currentPieceSelected, chessBoardArray,iRow,iColumn, currentTurn){
     let possibleMoves = []
     switch (currentPieceSelected.toLowerCase()){

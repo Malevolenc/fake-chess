@@ -9,6 +9,8 @@ export class PieceDetection{
         // Checks all squares left of the original square
         for (let i = iColumn-1; i >= 0; i--){
             if (chessBoardArray[iRow][i]){
+                // If the piece on that square is an enemy square, allow movement on that square for capture and break out of loop
+                // due to obstruction
                 if (this.checkPieceColour(chessBoardArray[iRow][i]) != currentTurn){
                     moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
@@ -22,10 +24,15 @@ export class PieceDetection{
                         false
                     ))
                     break
-                } else{
+                } 
+                // This else block executes in the case when the piece on the square is a friendly piece, in that case, break out of
+                // loop due to obstruction
+                else{
                     break
                 }
-            } else{
+            } 
+            // This else block executes if the square is empty and after, it will move to the next square.
+            else{
                 moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(iRow, i),
@@ -43,6 +50,8 @@ export class PieceDetection{
         // Checks all squares right of the original square
         for (let i = iColumn+1; i < 8; i++){
             if (chessBoardArray[iRow][i]){
+                // If the piece on that square is an enemy square, allow movement on that square for capture and break out of loop
+                // due to obstruction
                 if (this.checkPieceColour(chessBoardArray[iRow][i]) != currentTurn){
                     moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
@@ -56,10 +65,15 @@ export class PieceDetection{
                         false
                     ))
                     break
-                } else{
+                } 
+                // This else block executes in the case when the piece on the square is a friendly piece, in that case, break out of
+                // loop due to obstruction
+                else{
                     break
                 }
-            } else{
+            } 
+            // This else block executes if the square is empty and after, it will move to the next square.
+            else{
                 moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(iRow, i),
@@ -79,10 +93,13 @@ export class PieceDetection{
     // Checks all squares vertical to a position
     static checkVertical(chessBoardArray, iRow,iColumn,currentTurn, moveNumber){
         let moveObjects = []
-        let currentPiece = chessBoardArray[iRow][iColumn]
 
+        // Checks all squares above the original square
         for (let i = iRow-1; i >= 0; i--){
+            // If the square is occupied
             if (chessBoardArray[i][iColumn]){
+                // If the piece on that square is an enemy square, allow movement on that square for capture and break out of loop
+                // due to obstruction
                 if (this.checkPieceColour(chessBoardArray[i][iColumn]) != currentTurn){
                     moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
@@ -96,10 +113,14 @@ export class PieceDetection{
                         false
                     ))
                     break
+                // This else block executes in the case when the piece on the square is a friendly piece, in that case, break out of
+                // loop due to obstruction
                 } else{
                     break
                 }
-            } else{
+            } 
+            // This else block executes if the square is empty and after, it will move to the next square.
+            else{
                 moveObjects.push(createMoveObject(
                     Coordinate.indicesToCoords(iRow,iColumn),
                     Coordinate.indicesToCoords(i, iColumn),
@@ -115,8 +136,11 @@ export class PieceDetection{
             }
         }
 
+        // Check all squares below the original square
         for (let i = iRow+1; i < 8; i++){
             if (chessBoardArray[i][iColumn]){
+                // If the piece on that square is an enemy square, allow movement on that square for capture and break out of loop
+                // due to obstruction
                 if (this.checkPieceColour(chessBoardArray[i][iColumn]) != currentTurn){
                     moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
@@ -130,10 +154,15 @@ export class PieceDetection{
                         false
                     ))
                     break
-                } else{
+                } 
+                // This else block executes in the case when the piece on the square is a friendly piece, in that case, break out of
+                // loop due to obstruction
+                else{
                     break
                 }
-            } else{
+            } 
+            // This else block executes if the square is empty and after, it will move to the next square.
+            else{
                 moveObjects.push(createMoveObject(
                         Coordinate.indicesToCoords(iRow,iColumn),
                         Coordinate.indicesToCoords(i, iColumn),
@@ -166,8 +195,11 @@ export class PieceDetection{
             let row = iRow+dR
             let column = iColumn+dC
 
+            // Checks all squares in the current diagonal direction
             while (row >= 0 && row < 8 && column >=0 && column < 8){
                 if (chessBoardArray[row][column]){
+                    // If the piece on that square is an enemy square, allow movement on that square for capture and break out of loop
+                    // due to obstruction
                     if (this.checkPieceColour(chessBoardArray[row][column]) != currentTurn){
                         moveObjects.push(createMoveObject(
                             Coordinate.indicesToCoords(iRow,iColumn),
@@ -180,13 +212,15 @@ export class PieceDetection{
                             false,
                             false
                         ))
-                        
                         break
                     }
+                    // This else block executes in the case when the piece on the square is a friendly piece, in that case, break out of
+                    // loop due to obstruction
                     else{
                         break
                     }
                 }
+                // This executes if the square is empty and after, it will move to the next square.
                 moveObjects.push(createMoveObject(
                     Coordinate.indicesToCoords(iRow,iColumn),
                     Coordinate.indicesToCoords(row, column),

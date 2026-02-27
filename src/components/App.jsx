@@ -19,7 +19,10 @@ export default function App() {
 
   // chessBoardArrayState[0][0] === h1 & chessBoardArrayState[7][7] = a8 from Top Left to Bottom Right White POV
 
+  // The player colour is what determines the orientation of the board and the player's colour.
   const [playerColour, setPlayerColour] = useState("white")
+
+  // When the component is first rendered, the chessboard array is empty.
   const [chessBoardArray, setChessBoardArray] = useState(FENtoArray(emptyBoardFEN))
   const [currentTurn, setCurrentTurn] = useState("white")
 
@@ -46,22 +49,28 @@ export default function App() {
   // moveLogs[move number][white or black]
   const [moveLogs, setMoveLogs] = useState([])
 
+  // This runs everytime a move is made to locate the kings onn the board for check detection
   useEffect(()=>{
       setWhiteKingCoords(()=>findKing("white", chessBoardArray))
       setBlackKingCoords(()=>findKing("black", chessBoardArray))
   }, [chessBoardArray])
 
   useEffect(()=>{
+    // locatePieces returns an array with the coordinates of all pieces of the same colour
     let allPieceCoords = locatePieces(currentTurn, chessBoardArray)
     let allLegalMoves;
     let lastMove = moveLogs.at(-1)
 
+    // If there are still pieces on the board, check every turn if the game is over by checkmate or stalemate
     if (allPieceCoords.length !== 0){
       if (currentTurn == "white"){
         allLegalMoves = genAllLegalMoves(allPieceCoords, chessBoardArray, currentTurn, whiteKingCoords, moveNumber, enPassantTarget, castlingRights)
+        // If a colour's number of legal moves is zero + their king is in check, the current colour loses due to checkmate
         if (allLegalMoves.length == 0 && lastMove.isCheck){
           setResult(()=>"White has been Checkmated")
-        } else if (allLegalMoves.length == 0 && !lastMove.isCheck){
+        } 
+        // If a colour's number of legal moves is zero + their king is not in check, the game is a draw due to stalemate
+        else if (allLegalMoves.length == 0 && !lastMove.isCheck){
             setResult(()=>"Stalemate")
         }
     }
