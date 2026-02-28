@@ -2,7 +2,7 @@ import Square from "./Square"
 
 import "./Row.css"
 
-export default function Row({startingColour, currentRowIndex, currentRowArray}){
+export default function Row({startingColour, currentRowIndex, currentRowArray, handleSquareClick}){
     function createRow(){
         let currentSquareColour =startingColour
         let rowArr = []
@@ -14,7 +14,8 @@ export default function Row({startingColour, currentRowIndex, currentRowArray}){
 
                     currentRowIndex={currentRowIndex}
                     currentColumnIndex={i}
-                    currentColumnElement={currentRowArray[i]}/>
+                    currentColumnElement={currentRowArray[i]}
+                    handleSquareClick={handleSquareClick}/>
                 )
                 currentSquareColour = currentSquareColour === "white" ? "black" : "white"
             }

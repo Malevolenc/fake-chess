@@ -1,6 +1,7 @@
 .Chessboard{
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .Chessboard.black{
@@ -9,5 +10,15 @@
 }
 
 .Chessboard.black > .row > .chessSquare >.piece{
+    transform: rotateY(180deg);
+}
+
+.informationInterface{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.Chessboard.black > .informationInterface{
     transform: rotateY(180deg);
 }

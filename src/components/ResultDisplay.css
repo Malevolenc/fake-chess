@@ -1,10 +1,8 @@
 .resultDisplay{
-    position: absolute;
     height: 10vh;
-    width: 50vw;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 50%;
+    margin: auto;
+    margin-bottom: 10px;
     border: 5px black solid;
     background-color: white;
     text-align: center;

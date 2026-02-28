@@ -23,3 +23,11 @@ Finally finished the chess side of the project, time to do QOL stuff like:
 - Designing my own assets (chess pieces, colour scheme, UI)
 
 Then after that, I will start with the chess engine :ooooooooooooooooooooooooooooooooooo
+
+28/2/2026:
+I created the first version of FakeChessBot, this magnificent bot works by:
+- Choosing a random legal move
+- Plays it
+- Plays way worse than the Martin Bot.
+
+I am planning to implement Minimax for V2 soon
